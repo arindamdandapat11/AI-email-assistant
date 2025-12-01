@@ -59,7 +59,7 @@ or
 bun run dev
 
 Open:
-http://localhost:5173
+http://localhost:8800
 
 ------------------------------------------------------------
 🧠 FRONTEND ENV SETUP (.env)
