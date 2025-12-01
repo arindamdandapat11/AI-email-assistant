@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+# AI-email-assistant
+AI Email Reply Assistant that generates professional, context-aware responses from email threads. Built with React, Spring Boot, PostgreSQL, and OpenAI API. Includes tone selection, secure data handling, and an interface to review and edit AI-generated drafts before sending.
+Full Setup Guide (Frontend + Backend + Gemini AI + Supabase)
 
-## Project info
+This project uses:
+- Frontend: Your existing Lovable-generated React + Vite + Tailwind frontend (unchanged)
+- Backend: Supabase Edge Function rewritten to use Gemini 1.5 Pro
+- Database (optional): SQL table to store reply history
 
-**URL**: https://lovable.dev/projects/e8db06e5-43e1-44ff-84ce-60e4d5c2e968
+Frontend is NOT modified. Only backend is replaced.
 
-## How can I edit this code?
+------------------------------------------------------------
+🚀 QUICK START
+------------------------------------------------------------
 
-There are several ways of editing your application.
+1) INSTALL DEPENDENCIES (FRONTEND)
 
-**Use Lovable**
+cd <your-project-folder>
+npm install
+or
+bun install
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e8db06e5-43e1-44ff-84ce-60e4d5c2e968) and start prompting.
+------------------------------------------------------------
+2) CONFIGURE SUPABASE
 
-Changes made via Lovable will be committed automatically to this repo.
+cd supabase
+supabase login
 
-**Use your preferred IDE**
+supabase link --project-ref <YOUR_SUPABASE_PROJECT_ID>
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+------------------------------------------------------------
+3) SET GEMINI API KEY
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+supabase secrets set \
+  GEMINI_API_KEY="YOUR_GEMINI_KEY_HERE" \
+  GEMINI_MODEL="gemini-1.5-pro"
 
-Follow these steps:
+------------------------------------------------------------
+4) DEPLOY EDGE FUNCTION
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+The backend function is located at:
+supabase/functions/generate-reply/index.ts
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Deploy it:
 
-# Step 3: Install the necessary dependencies.
-npm i
+supabase functions deploy generate-reply
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+After deployment it runs at:
+https://<PROJECT_ID>.supabase.co/functions/v1/generate-reply
+
+Frontend already calls this function.
+
+------------------------------------------------------------
+5) RUN FRONTEND
+
+cd <your-project-folder>
 npm run dev
-```
+or
+bun run dev
 
-**Edit a file directly in GitHub**
+Open:
+http://localhost:5173
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+------------------------------------------------------------
+🧠 FRONTEND ENV SETUP (.env)
+------------------------------------------------------------
 
-**Use GitHub Codespaces**
+VITE_SUPABASE_URL="https://<YOUR_PROJECT_ID>.supabase.co"
+VITE_SUPABASE_ANON_KEY="<YOUR_ANON_PUBLIC_KEY>"
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+------------------------------------------------------------
+🗄 OPTIONAL: SQL TABLE (reply history)
+------------------------------------------------------------
 
-## What technologies are used for this project?
+Run sql:
+supabase/sql/init.sql
 
-This project is built with:
+OR paste it in Supabase Dashboard → SQL Editor.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Creates table: email_replies ( id SERIAL PRIMARY KEY, sender TEXT, subject TEXT, body TEXT, tone TEXT, generated_reply TEXT, created_at timestamptz DEFAULT NOW() )
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e8db06e5-43e1-44ff-84ce-60e4d5c2e968) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+------------------------------------------------------------
+END OF README
